@@ -1,0 +1,211 @@
+/* --- CSS: Estilização Global e Variáveis --- */
+:root {
+    --gold: #d4af37;
+    --dark: #121212;
+    --dark-gray: #1e1e1e;
+    --light: #f5f5f5;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body { background-color: var(--dark); color: var(--light); line-height: 1.6; }
+
+.container { padding: 1rem; max-width: 1200px; margin: 0 auto; } /* Padding ajustado para mobile */
+
+/* --- Header / Navegação --- */
+header {
+    background-color: var(--dark-gray);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column; /* Coloca o logo e o nav em linhas separadas no mobile */
+    align-items: center;
+    border-bottom: 2px solid var(--gold);
+    text-align: center;
+}
+
+.logo { font-size: 1.5rem; font-weight: bold; color: var(--gold); margin-bottom: 10px; }
+
+nav a {
+    color: var(--light);
+    text-decoration: none;
+    margin: 5px 8px; /* Espaçamento menor no mobile */
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block; /* Garante que os links se ajustem */
+    font-size: 0.9rem;
+}
+
+nav a:hover { color: var(--gold); background-color: #333; }
+nav .admin-link { color: #ff4444; }
+
+/* --- Seção HERO (Apresentação) --- */
+.hero {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1599307204987-a36c47b593f6?auto=format&fit=crop&w=1000&q=80');
+    background-size: cover;
+    background-position: center;
+    height: 350px; /* Altura reduzida no mobile */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    padding: 10px;
+}
+
+.hero h1 { font-size: 2.5rem; color: var(--gold); margin-bottom: 10px; } /* Fonte menor */
+.hero p { font-size: 1rem; margin-bottom: 15px; }
+
+/* --- Seção de Serviços --- */
+.services h2 {
+    border-left: 5px solid var(--gold);
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+
+.services-grid {
+    display: grid;
+    /* No mobile, teremos apenas 1 coluna */
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.service-card {
+    background-color: var(--dark-gray);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    transition: transform 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.service-card h3 { color: var(--gold); margin-bottom: 8px; }
+.price { font-size: 1.2rem; font-weight: bold; margin-top: 10px; display: block;}
+
+/* --- Formulários e Seções Secundárias --- */
+.view {
+    padding: 30px 0;
+    display: none;
+}
+
+.view.active {
+    display: block;
+}
+
+.form-box {
+    max-width: 100%; /* Ocupa 100% da largura no mobile */
+    margin: 0 auto;
+    background-color: var(--dark-gray);
+    padding: 1.5rem; /* Padding interno menor */
+    border-radius: 10px;
+    border-top: 5px solid var(--gold);
+}
+
+input[type="email"], input[type="password"], input[type="text"], input[type="datetime-local"], select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #333;
+    background-color: #333;
+    color: var(--light);
+    border-radius: 4px;
+}
+
+button.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--gold);
+    color: var(--dark);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+button.btn-primary:hover { background-color: #b8962e; }
+
+
+/* --- Admin Panel --- */
+.admin-panel h2 { margin-bottom: 15px; color: var(--gold); font-size: 1.5rem; }
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--dark-gray);
+    border-radius: 8px;
+    overflow-x: auto; /* Permite scroll horizontal em tabelas grandes no mobile */
+    display: block;
+}
+
+.admin-table th, .admin-table td {
+    padding: 10px; /* Padding reduzido */
+    text-align: left;
+    border-bottom: 1px solid #333;
+    white-space: nowrap; /* Impede que o texto quebre em várias linhas */
+}
+
+.admin-table th { background-color: #333; color: var(--gold); }
+
+.btn-cancel {
+    background-color: #c0392b;
+    color: white;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.btn-cancel:hover { background-color: #a5281a; }
+
+.availability-control {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #333;
+    border-radius: 8px;
+}
+
+/* ------------------------------------------------ */
+/* --- MEDIA QUERY: AJUSTES PARA TELAS GRANDES (Desktop/Tablet) --- */
+/* ------------------------------------------------ */
+
+@media (min-width: 768px) {
+    
+    .container { padding: 2rem; }
+
+    /* Header */
+    header {
+        flex-direction: row; /* Volta a alinhar logo e nav na mesma linha */
+        padding: 1rem 2rem;
+    }
+    .logo { margin-bottom: 0; }
+    nav a { font-size: 1rem; margin-left: 20px; }
+
+    /* Hero */
+    .hero {
+        height: 450px;
+    }
+    .hero h1 { font-size: 3.5rem; }
+    
+    /* Serviços: Volta ao layout de Grid (3 colunas) */
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+    
+    /* Formulários */
+    .form-box {
+        max-width: 450px; /* Largura definida para desktop */
+        padding: 2rem;
+    }
+
+    /* Admin Table */
+    .admin-table {
+        overflow-x: hidden; /* Desliga o scroll no desktop */
+        display: table;
+    }
+}
