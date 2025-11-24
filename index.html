@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop - Protótipo</title>
+    <style>
+        /* --- CSS: Estilização Global e Variáveis --- */
+        :root {
+            --gold: #d4af37;
+            --dark: #121212;
+            --dark-gray: #1e1e1e;
+            --light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background-color: var(--dark); color: var(--light); line-height: 1.6; }
+
+        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+
+        /* --- Header / Navegação --- */
+        header {
+            background-color: var(--dark-gray);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        nav a:hover { color: var(--gold); background-color: #333; }
+        nav .admin-link { color: #ff4444; }
+
+        /* --- Seção HERO (Apresentação) --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=1174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Imagem de Fundo */
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+            padding: 20px;
+        }
+
+        .hero h1 { font-size: 3.5rem; color: var(--gold); margin-bottom: 15px; }
+        .hero p { font-size: 1.2rem; margin-bottom: 20px; }
+
+        /* --- Seção de Serviços --- */
+        .services h2 {
+            border-left: 5px solid var(--gold);
+            padding-left: 15px;
+            margin-bottom: 30px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .service-card {
+            background-color: var(--dark-gray);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-card h3 { color: var(--gold); margin-bottom: 10px; }
+        .price { font-size: 1.4rem; font-weight: bold; margin-top: 15px; display: block;}
+
+        /* --- Formulários e Seções Secundárias (Visão Geral) --- */
+        .view {
+            padding: 40px 0;
+            display: none; /* Escondidas por padrão, JS controlaria isso */
+        }
+        
+        .view.active {
+            display: block;
+        }
+
+        .form-box {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: var(--dark-gray);
+            padding: 2rem;
+            border-radius: 10px;
+            border-top: 5px solid var(--gold);
+        }
+
+        input[type="email"], input[type="password"], input[type="text"], input[type="datetime-local"], select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            background-color: #333;
+            color: var(--light);
+            border-radius: 4px;
+        }
+
+        button.btn-primary {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--gold);
+            color: var(--dark);
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+
+        button.btn-primary:hover { background-color: #b8962e; }
+
+        /* --- Admin Panel --- */
+        .admin-panel h2 { margin-bottom: 20px; color: var(--gold); }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .admin-table th { background-color: #333; color: var(--gold); }
+        
+        .btn-cancel {
+            background-color: #c0392b;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-cancel:hover { background-color: #a5281a; }
+        
+        /* Layout Admin: Disponibilidade */
+        .availability-control {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 8px;
+        }
+    </style>
+    <script>
+        // --- JavaScript Simples para Troca de Telas (Views) ---
+        function showView(viewId) {
+            // Esconde todas as views
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            // Mostra a view solicitada
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.add('active');
+                // Altera o título da página (opcional)
+                document.title = 'BarberShop - ' + viewId.charAt(0).toUpperCase() + viewId.slice(1);
+            }
+        }
+
+        // Simula o login para redirecionar para o Agendamento
+        function loginUser() {
+            alert('Login realizado com sucesso! Redirecionando para agendamento.');
+            showView('booking');
+        }
+
+        // Simula o cancelamento de um agendamento
+        function cancelAppointment(client) {
+            if(confirm(`Tem certeza que deseja cancelar o horário de ${client}?`)) {
+                alert(`Agendamento de ${client} cancelado com sucesso.`);
+                // Aqui entraria a lógica real para remover o item da agenda
+            }
+        }
+
+        // Inicializa na tela principal ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('home');
+        });
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">BARBER SHOP</div>
+        <nav>
+            <a onclick="showView('home')">Início</a>
+            <a onclick="showView('login')">Login / Cadastro</a>
+            <a onclick="showView('booking')">Agendar</a>
+            <a onclick="showView('admin')" class="admin-link">Área Admin</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div id="home" class="view active">
+            
+            <section class="hero">
+                <h1>Estilo. Tradição. Barba.</h1>
+                <p>O seu novo visual começa aqui. Agende seu horário e experimente a diferença.</p>
+                <button class="btn-primary" style="width: 250px;" onclick="showView('login')">Fazer Agendamento</button>
+            </section>
+
+            <section class="services">
+                <h2>Serviços em Destaque</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3>Corte Clássico</h3>
+                        <p>Corte na tesoura e máquina com finalização perfeita na navalha.</p>
+                        <span class="price">R$ 45,00</span>
+                    </div>
+                    <div class="service-card">
+                        <h3>Combo Barba & Cabelo</h3>
+                        <p>Pacote completo: o corte que você deseja e a barba que você merece.</p>
+                        <span class="price">R$ 75,00</span>
+                    </div>
+                    <div class="service-card">
+                        <h3>Barba Terapia</h3>
+                        <p>Toalha quente, óleo de barba, design, massagem e pós-barba premium.</p>
+                        <span class="price">R$ 40,00</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="login" class="view">
+            <div class="form-box">
+                <h2 style="text-align: center; margin-bottom: 20px; color: var(--gold);">Acessar Conta</h2>
+                <input type="email" placeholder="Seu E-mail">
+                <input type="password" placeholder="Sua Senha">
+                <button class="btn-primary" onclick="loginUser()">Entrar</button>
+                <p style="text-align: center; margin-top: 20px;">
+                    <a href="#" style="color: var(--gold);">Esqueci a senha</a> |
+                    <a href="#" style="color: var(--gold);">Criar nova conta</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="booking" class="view">
+            <div class="form-box" style="max-width: 600px;">
+                <h2 style="text-align: center; margin-bottom: 20px;">Faça Seu Agendamento</h2>
+
+                <label style="display: block; margin-top: 15px;">Escolha o Barbeiro:</label>
+                <select>
+                    <option value="Joao">João Tesoura</option>
+                    <option value="Carlos">Carlos Navalha</option>
+                    <option value="Mamacleyton">Mamacleyton (O Mestre)</option>
+                </select>
+
+                <label style="display: block; margin-top: 15px;">Escolha a Data e Horário:</label>
+                <input type="datetime-local" value="2025-11-25T10:00">
+                
+                <label style="display: block; margin-top: 15px;">Serviço:</label>
+                <select>
+                    <option>Combo Barba & Cabelo (R$ 75,00)</option>
+                    <option>Corte Clássico (R$ 45,00)</option>
+                    <option>Barba Terapia (R$ 40,00)</option>
+                </select>
+
+                <button class="btn-primary">Confirmar Agendamento</button>
+            </div>
+        </div>
+        
+        <div id="admin" class="view">
+            <section class="admin-panel">
+                <h2>Área Admin: Gerenciamento de Agenda</h2>
+
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Cliente</th>
+                            <th>Serviço</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>09:00</td>
+                            <td>Paulo Silva</td>
+                            <td>Corte Clássico</td>
+                            <td><button class="btn-cancel" onclick="cancelAppointment('Paulo Silva')">Cancelar</button></td>
+                        </tr>
+                        <tr>
+                            <td>10:00</td>
+                            <td>Maria Clara</td>
+                            <td>Barba Terapia</td>
+                            <td><button class="btn-cancel" onclick="cancelAppointment('Maria Clara')">Cancelar</button></td>
+                        </tr>
+                        <tr>
+                            <td>11:00</td>
+                            <td>João Pedro</td>
+                            <td>Combo</td>
+                            <td><button class="btn-cancel" onclick="cancelAppointment('João Pedro')">Cancelar</button></td>
+                        </tr>
+                        </tbody>
+                </table>
+                
+                <div class="availability-control">
+                    <h3>Definir Disponibilidade</h3>
+                    <p style="margin-bottom: 10px;">Aqui o barbeiro pode bloquear ou liberar horários específicos.</p>
+                    <input type="text" placeholder="Ex: Adicionar Pausa das 12:00 às 13:00">
+                    <button class="btn-primary" style="width: 250px;">Salvar Bloqueio</button>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</body>
+</html>
